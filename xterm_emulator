@@ -1,0 +1,52 @@
+<?php
+
+$connect = ssh2_connect (domain, port);
+
+if (!$connect)
+{
+	print "FAILED\n";
+	exit;
+}
+
+if (!ssh2_auth_password ($connect, id, password))
+{
+	print "AUTHORIZATION FAILED\n";
+	unset ($connect);
+	exit;
+}
+
+// $shell = ssh2_shell ($connect, "xterm", null, 120, 24, SSH2_TERM_UNIT_CHARS);
+$shell = ssh2_shell ($connect);
+
+fwrite ($shell, "xterm\r");
+sleep (1);
+print fread ($shell, 4096);
+
+fwrite ($shell, "amp_admin\r");
+sleep (1);
+print fread ($shell, 4096);
+
+fwrite ($shell, "3\x1bOM");
+sleep (1);
+print fread ($shell, 4096);
+
+fwrite ($shell, "\x1b[11~");
+sleep (1);
+print fread ($shell, 4096);
+
+fwrite ($shell, "\x1b[20~");
+sleep (3);
+print fread ($shell, 4096);
+
+fwrite ($shell, "\x1b[20~");
+sleep (3);
+print fread ($shell, 4096);
+
+fwrite ($shell, "lo\r");
+sleep (1);
+print fread ($shell, 4096);
+
+fclose ($shell);
+unset ($connect);
+
+?>
